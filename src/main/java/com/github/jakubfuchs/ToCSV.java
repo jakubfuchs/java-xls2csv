@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
+import org.apache.poi.ss.formula.eval.NotImplementedException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -432,7 +433,7 @@ public class ToCSV {
         String csvLineElement;
 
         // Open a writer onto the CSV file.
-        try (BufferedWriter bw = Files.newBufferedWriter(file.toPath(), StandardCharsets.ISO_8859_1)) {
+        try (BufferedWriter bw = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
 
             System.out.println("Saving the CSV file [" + file.getName() + "]");
 
@@ -514,7 +515,11 @@ public class ToCSV {
                         csvLine.add(this.formatter.formatCellValue(cell));
                     }
                     else {
-                        csvLine.add(this.formatter.formatCellValue(cell, this.evaluator));
+                        try {
+                            csvLine.add(this.formatter.formatCellValue(cell, this.evaluator));
+                        } catch (NotImplementedException ex) {
+                            csvLine.add("formula8888");
+                        }
                     }
                 }
             }
