@@ -341,8 +341,10 @@ public class ToCSV {
                 // Open the workbook
                 this.openWorkbook(excelFile);
 
+                // TODO hard-coded sheet-name
                 // Convert it's contents into a CSV file
-                this.convertToCSV();
+                // this.convertToCSV();
+                this.convertToCsv("Sheet1");
 
                 // Build the name of the csv folder from that of the Excel workbook.
                 // Simply replace the .xls or .xlsx file extension with .csv
@@ -387,8 +389,6 @@ public class ToCSV {
      */
     private void convertToCSV() {
         Sheet sheet;
-        Row row;
-        int lastRowNum;
         this.csvData = new ArrayList<>();
 
         System.out.println("Converting files contents to CSV format.");
@@ -402,20 +402,36 @@ public class ToCSV {
             // Get a reference to a sheet and check to see if it contains
             // any rows.
             sheet = this.workbook.getSheetAt(i);
-            if(sheet.getPhysicalNumberOfRows() > 0) {
-                // Note down the index number of the bottom-most row and
-                // then iterate through all of the rows on the sheet starting
-                // from the very first row - number 1 - even if it is missing.
-                // Recover a reference to the row and then call another method
-                // which will strip the data from the cells and build lines
-                // for inclusion in the resylting CSV file.
-                lastRowNum = sheet.getLastRowNum();
-                for(int j = 0; j <= lastRowNum; j++) {
-                    row = sheet.getRow(j);
-                    this.rowToCSV(row);
-                }
+            sheetConversion(sheet);
+        }
+    }
+
+    private void convertToCsv(String sheetName) {
+        Sheet sheet = this.workbook.getSheet(sheetName);
+        this.csvData = new ArrayList<>();
+
+        System.out.println("Converting files contents, the sheet: " + sheetName + ", to CSV format.");
+
+        sheetConversion(sheet);
+    }
+
+    private void sheetConversion(Sheet sheet) {
+        int lastRowNum;
+        Row row;
+        if(sheet.getPhysicalNumberOfRows() > 0) {
+            // Note down the index number of the bottom-most row and
+            // then iterate through all of the rows on the sheet starting
+            // from the very first row - number 1 - even if it is missing.
+            // Recover a reference to the row and then call another method
+            // which will strip the data from the cells and build lines
+            // for inclusion in the resylting CSV file.
+            lastRowNum = sheet.getLastRowNum();
+            for(int j = 0; j <= lastRowNum; j++) {
+                row = sheet.getRow(j);
+                this.rowToCSV(row);
             }
         }
+
     }
 
     /**
