@@ -144,6 +144,7 @@ public class ToCSV {
 
     private static final String CSV_FILE_EXTENSION = ".csv";
     private static final String DEFAULT_SEPARATOR = ",";
+    private static final String DEFAULT_DECIM_DELIMETER = ".";
 
     /**
      * Identifies that the CSV file should obey Excel's formatting conventions
@@ -511,12 +512,25 @@ public class ToCSV {
                     csvLine.add("");
                 }
                 else {
-                    if(cell.getCellType() != CellType.FORMULA) {
-                        csvLine.add(this.formatter.formatCellValue(cell));
+                    if(cell.getCellType() != CellType.FORMULA)  {
+                        // the formatCellValue is not working as advertise
+                        // the desired decimal sep. for numeric has to be converted by force
+                        // TODO the decimal sep. variant is hard-coded
+                        String cellValue = this.formatter.formatCellValue(cell);
+                        if(cell.getCellType() == CellType.NUMERIC) {
+                            cellValue = this.formatter.formatCellValue(cell).replace(".", ",");
+                        }
+                        csvLine.add(cellValue);
                     }
                     else {
                         try {
-                            csvLine.add(this.formatter.formatCellValue(cell, this.evaluator));
+                            String cellValue = this.formatter.formatCellValue(cell, this.evaluator);
+                            try {
+                                Double d = Double.parseDouble(cellValue);
+                                csvLine.add(cellValue.replace(".", ","));
+                            } catch (NumberFormatException ex) {
+                              csvLine.add(cellValue);
+                            }
                         } catch (NotImplementedException ex) {
                             csvLine.add("formula8888");
                         }
