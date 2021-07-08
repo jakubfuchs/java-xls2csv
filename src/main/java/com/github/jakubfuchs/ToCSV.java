@@ -719,8 +719,8 @@ public class ToCSV {
         /**
          * Determine those files that will be returned by a call to the
          * listFiles() method. In this case, the name of the file must end with
-         * either of the following two extension; '.xls' or '.xlsx'. For the
-         * future, it is very possible to parameterise this and allow the
+         * either of the following three extension; '.xlsm', '.xls' or '.xlsx'. For the
+         * future, it is very possible to parameterize this and allow the
          * containing class to pass, for example, an array of Strings to this
          * class on instantiation. Each element in that array could encapsulate
          * a valid file extension - '.xls', '.xlsx', '.xlt', '.xlst', etc. These
@@ -739,7 +739,7 @@ public class ToCSV {
          */
         @Override
         public boolean accept(File file, String name) {
-            return(name.endsWith(".xls") || name.endsWith(".xlsx"));
+            return(name.endsWith(".xls") || name.endsWith(".xlsx") || name.endsWith(".xlsm"));
         }
     }
 }
