@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -450,7 +451,8 @@ public class ToCSV {
         String csvLineElement;
 
         // Open a writer onto the CSV file.
-        try (BufferedWriter bw = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
+        // TODO hardcoded platform specific Cp1250
+        try (BufferedWriter bw = Files.newBufferedWriter(file.toPath(), Charset.forName("Cp1250"))) {
 
             System.out.println("Saving the CSV file [" + file.getName() + "]");
 
@@ -493,7 +495,9 @@ public class ToCSV {
                 // avoid an additional, superfluous, new line at the end of
                 // the file.
                 if(i < (this.csvData.size() - 1)) {
-                    bw.newLine();
+                    // TODO hardcoded, CRLF EOL that is needed for platform specific Cp1252
+                    //bw.newLine();
+                    bw.append("\r\n");
                 }
             }
         }
